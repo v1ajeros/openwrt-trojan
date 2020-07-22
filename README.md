@@ -56,7 +56,7 @@ Usage
     }
 }</code></pre>
 
-7. edit '/etc/firewall.user'
+7. edit '/etc/firewall.user' for transparent proxy
 <pre><code># Create new chain
 iptables -t nat -N TROJAN
 iptables -t mangle -N TROJAN
