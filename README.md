@@ -21,8 +21,8 @@ Usage
    The init script is disabled by default to avoid startup
    before configuration.
    
-6. edit '/etc/trojan.json' file. <pre><code>
-{
+6. edit '/etc/trojan.json' file. 
+<pre><code>{
     "run_type": "nat",
     "local_addr": "127.0.0.1",
     "local_port": 12345,
@@ -54,8 +54,7 @@ Usage
         "fast_open": false,
         "fast_open_qlen": 20
     }
-}
-</code></pre>
+}</code></pre>
 
 FAQ
 ---
