@@ -61,7 +61,7 @@ Usage
 iptables -t nat -N TROJAN
 iptables -t mangle -N TROJAN
 
-# Ignore your shadowsocks server's addresses
+# Ignore your trojan server's addresses
 # It's very IMPORTANT, just be careful.
 iptables -t nat -A TROJAN -d <server ip> -j RETURN
 
