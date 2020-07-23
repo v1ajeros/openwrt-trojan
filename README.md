@@ -63,7 +63,7 @@ iptables -t mangle -N TROJAN
 
 # Ignore your trojan server's addresses
 # It's very IMPORTANT, just be careful.
-iptables -t nat -A TROJAN -d <server ip> -j RETURN
+iptables -t nat -A TROJAN -d server_ip -j RETURN
 
 # Ignore LANs and any other addresses you'd like to bypass the proxy
 # See Wikipedia and RFC5735 for full list of reserved networks.
@@ -78,7 +78,7 @@ iptables -t nat -A TROJAN -d 224.0.0.0/4 -j RETURN
 iptables -t nat -A TROJAN -d 240.0.0.0/4 -j RETURN
 
 # Anything else should be redirected to trojan's local port
-iptables -t nat -A TROJAN -p tcp -j REDIRECT --to-ports <server port>
+iptables -t nat -A TROJAN -p tcp -j REDIRECT --to-ports server_port
 
 # Add any UDP rules
 ip route add local default dev lo table 100
