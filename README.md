@@ -9,7 +9,7 @@ Usage
 2. install feeds from openwrt official package repository.
 
     <pre><code>./scripts/feeds update -a
-    ./scripts/feeds install -a</code></pre>
+   ./scripts/feeds install -a</code></pre>
 
 3. use 'make menuconfig' to select trojan package
 
