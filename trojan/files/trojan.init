@@ -10,6 +10,7 @@ USE_PROCD=1
 
 PROG=/usr/sbin/trojan
 CONF=/etc/trojan.json
+SERV_ADDR=192.168.100.100
 
 config_load "trojan"
 
@@ -64,6 +65,47 @@ start_service() {
             }
             procd_close_instance
         done
+        
+	    # Create new chain for trojan
+	    iptables -t nat -N TROJAN
+	    iptables -t mangle -N TROJAN
+
+	    # Ignore your shadowsocks server's addresses
+	    # It's very IMPORTANT, just be careful.
+	    iptables -t nat -A TROJAN -d SERV_ADDR -j RETURN
+
+	    # Ignore LANs and any other addresses you'd like to bypass the proxy
+	    # See Wikipedia and RFC5735 for full list of reserved networks.
+	    # See ashi009/bestroutetb for a highly optimized CHN route list.
+	    iptables -t nat -A TROJAN -d 0.0.0.0/8 -j RETURN
+	    iptables -t nat -A TROJAN -d 10.0.0.0/8 -j RETURN
+	    iptables -t nat -A TROJAN -d 127.0.0.0/8 -j RETURN
+	    iptables -t nat -A TROJAN -d 169.254.0.0/16 -j RETURN
+	    iptables -t nat -A TROJAN -d 172.16.0.0/12 -j RETURN
+	    iptables -t nat -A TROJAN -d 192.168.0.0/16 -j RETURN
+	    iptables -t nat -A TROJAN -d 224.0.0.0/4 -j RETURN
+	    iptables -t nat -A TROJAN -d 240.0.0.0/4 -j RETURN
+
+	    # Anything else should be redirected to trojan's local port
+	    iptables -t nat -A TROJAN -p tcp -j REDIRECT --to-ports 1080
+
+	    # Add any UDP rules
+	    ip route add local default dev lo table 100
+	    ip rule add fwmark 1 lookup 100
+	    iptables -t mangle -A TROJAN -d 0.0.0.0/8 -j RETURN
+	    iptables -t mangle -A TROJAN -d 10.0.0.0/8 -j RETURN
+	    iptables -t mangle -A TROJAN -d 127.0.0.0/8 -j RETURN
+	    iptables -t mangle -A TROJAN -d 169.254.0.0/16 -j RETURN
+	    iptables -t mangle -A TROJAN -d 172.16.0.0/12 -j RETURN
+	    iptables -t mangle -A TROJAN -d 192.168.0.0/16 -j RETURN
+	    iptables -t mangle -A TROJAN -d 224.0.0.0/4 -j RETURN
+	    iptables -t mangle -A TROJAN -d 240.0.0.0/4 -j RETURN
+	    iptables -t mangle -A TROJAN -p udp -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01
+
+	    # Apply the rules
+	    iptables -t nat -A PREROUTING -p tcp -j TROJAN
+	    iptables -t mangle -A PREROUTING -j TROJAN
+
     else
         echo "trojan is disabled, please check /etc/config/trojan"
     fi
