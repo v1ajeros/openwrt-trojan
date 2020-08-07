@@ -91,7 +91,7 @@ iptables -t mangle -A TROJAN -d 172.16.0.0/12 -j RETURN
 iptables -t mangle -A TROJAN -d 192.168.0.0/16 -j RETURN
 iptables -t mangle -A TROJAN -d 224.0.0.0/4 -j RETURN
 iptables -t mangle -A TROJAN -d 240.0.0.0/4 -j RETURN
-iptables -t mangle -A TROJAN -p udp -j TPROXY --on-port <server port> --tproxy-mark 0x01/0x01
+iptables -t mangle -A TROJAN -p udp -j TPROXY --on-port server_port --tproxy-mark 0x01/0x01
 
 # Apply the rules
 iptables -t nat -A PREROUTING -p tcp -j TROJAN
